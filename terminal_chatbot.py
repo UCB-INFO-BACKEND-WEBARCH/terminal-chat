@@ -1,6 +1,5 @@
 import argparse
 from urllib.parse import urljoin
-import logging
 import requests
 
 def make_request_request(server_url, message):
