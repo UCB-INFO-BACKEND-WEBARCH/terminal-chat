@@ -2,14 +2,13 @@ import argparse
 from urllib.parse import urljoin
 import requests
 
-def make_request_request(server_url, message):
-    full_url = urljoin(server_url, "/message")
+def send_chat(server_url, chat):
+    full_url = urljoin(server_url, "/chat")
 
-    raw_data = dict()
-    raw_data["data"] = {"command": None, "message": message } 
+    chat_request = {"chat": chat } 
     
     try: 
-        r = requests.post(full_url, json=raw_data)
+        r = requests.post(full_url, json=chat_request)
         r.raise_for_status()
     except requests.exceptions.ConnectionError as err:
         # eg, no internet
@@ -18,15 +17,15 @@ def make_request_request(server_url, message):
         # eg, url, server and other errors
         raise SystemExit(err)
 
-    data = r.json()
+    response_json = r.json()
 
-    return data["data"]
+    return response_json
 
 def main():
 
     parser = argparse.ArgumentParser(prog = 'TerminalChatBot',
         description = 'Terminal Chat Bot that sends request to server specified by the server url',
-        epilog = 'Please go to the INFO 253B Bcourses website for mreo information')
+        epilog = 'Please go to the INFO 253B Website for more information at https://groups.ischool.berkeley.edu/i253/sp25/')
     parser.add_argument("server_url", help="URL for chatbot server to send commands to (e.g. http://localhost)", type=str)
     args = parser.parse_args()
 
@@ -37,9 +36,9 @@ def main():
 
     while True:
 
-        message = input()
-        data = make_request_request(args.server_url, message)
-        print(f'-->{data.get("message")}')
+        chat = input()
+        chat_response = send_chat(args.server_url, chat)
+        print(f'-->{chat_response.get("chat")}')
         print()
 
 
